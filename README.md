@@ -1,55 +1,159 @@
-# Toolkit Template
+# Windows Crazyflie Setup
 
-Repository template for creating a new Web Component, specifically
-tailored to be part of the
-[Web at Illinois](https://github.com/web-illinois) Web Implementation
-Guidelines Group (WIGG) [Toolkit](https://github.com/web-illinois/toolkit-management).
+This guide explains how to set up a Windows machine to run a Crazyflie Python flight script using the Crazyradio dongle.
 
-## How To Use
+This setup is for **Windows PowerShell / Miniconda**, not WSL/Ubuntu.
 
-> [!IMPORTANT]
-> Follow the [steps in the toolkit-management documentation](https://github.com/web-illinois/toolkit-management/blob/main/documentation/README.md)
-> to contribute a component to the toolkit.
+## Important Notes
 
-## How this template works
+- `pip` installs the Python library: `cflib`.
+- **libusbK** is the USB driver Windows needs for the Crazyradio dongle.
+- **Zadig** is the tool used to install the `libusbK` driver onto the Crazyradio dongle.
+- **Homebrew is not needed on Windows.**
 
-The content that will be in the resulting repository is templated under
-the [`template`](./template) directory. The templating is configured
-in [`index.js`](./index.js), and uses a simple scaffolding tool called
-[CAZ](https://github.com/zce/caz).
+## 1. Install Python Dependencies
 
-There is a [templating GitHub Workflow](./.github/workflows/templating.yml) in this
-repository that's configured to run only once when the template is used.
-That workflow executes CAZ to scaffold the repository to the proper contents
-with the naming determined by the new repository's name.
+Open PowerShell or Anaconda Prompt and run:
 
-CAZ accepts input using "prompts", which can be specified in the command
-line invocation of the tool. The workflow specifies the values to those
-prompts, and CAZ takes care of the rest.
+```powershell
+pip install --upgrade pip
+pip install --upgrade cflib pyusb libusb-package
+```
 
-Finally, the workflow commits the changes to the new repository. This usually
-takes less than 10 seconds. Once done, the repository is ready to be worked on.
+## 2. Download libusbK
 
-## Developing this template
+Download libusbK for Windows:
 
-### Adding files
+```text
+https://sourceforge.net/projects/libusbk/
+```
 
-New files can be added to the [`template`](./template) directory, and they
-are automatically picked up.
+Install libusbK on your computer.
 
-- Substitutions in file names happen with curly braces, `{variable}`
-- Inside files, [lodash](https://lodash.com/docs#template) templates are used,
-  which uses `<%= variable %>` as delimiters.
+This gives Windows the USB driver package needed for Crazyradio access.
 
-> [!NOTE]
-> GitHub Workflows cannot be templated, and so must be entirely dynamic
-> and contained in the main [`.github/workflows`](./.github/workflows) directory.
+## 3. Install libusbK onto the Crazyradio Dongle Using Zadig
 
-### Adding Variables
+Plug in the **Crazyradio dongle**.
 
-If additional variables are needed, they must be added in two locations:
+Download and open Zadig:
 
-1. In [`index.js`](./index.js) as prompts.
-2. In the [workflow](./.github/workflows/templating.yml), they need to be
-   given values as arguments for the `caz` command.
+```text
+https://zadig.akeo.ie/
+```
 
+Use Zadig to assign the **libusbK** driver to the Crazyradio dongle:
+
+1. Click `Options`.
+2. Enable `List All Devices`.
+3. Select the Crazyradio device. It may appear as:
+   - `Crazyradio PA USB Dongle`
+   - `Crazyradio 2.0`
+   - `Bitcraze Crazyradio`
+4. In the driver selection box, choose:
+
+```text
+libusbK(v3.1.0.0) **versions may differ**
+```
+
+5. Click `Install Driver` or `Replace Driver`.
+6. Wait for the driver installation to finish.
+7. Unplug and replug the Crazyradio dongle.
+
+After this step, Windows should allow Python/cflib to access the Crazyradio.
+
+## 4. Verify Crazyradio Detection
+
+Run this in PowerShell:
+
+```powershell
+python -c "import cflib.crtp; cflib.crtp.init_drivers(); print(cflib.crtp.scan_interfaces())"
+```
+
+If the driver is not working, the output may look like:
+
+```text
+Cannot find a Crazyradio Dongle
+[]
+```
+
+If the driver is working, the output should include a radio interface, for example:
+
+```text
+[['radio://0/80/2M', '']]
+```
+
+## 5. Run the Test Flight
+
+From PowerShell:
+
+```powershell
+cd C:\Users\pelek\Downloads\crazyflie2-client\crazyflie2-client-updated
+python cf2flight.py
+```
+
+Before running:
+
+- Put the Crazyflie on the floor.
+- Make sure the props are clear.
+- Make sure the battery is connected.
+- Keep `Ctrl+C` ready to stop the script.
+- Watch the terminal for connection and preflight messages.
+
+The test script attempts a short low hover at about `0.25 m`, then stops, disconnects, and writes a timestamped `.json` flight log.
+
+## Troubleshooting
+
+### Error: `Cannot find a Crazyradio Dongle`
+
+This usually means Windows/Python cannot access the Crazyradio USB dongle.
+
+Try:
+
+1. Unplug and replug the Crazyradio.
+2. Reopen Zadig and confirm the selected device is the **Crazyradio dongle**, not the drone.
+3. Confirm the installed driver is:
+
+```text
+libusbK
+```
+
+4. If needed, click `Replace Driver` in Zadig and reinstall `libusbK`.
+5. Try a different USB port.
+6. Avoid USB hubs.
+7. Close any other Crazyflie client or program that might already be using the dongle.
+8. Run the detection command again:
+
+```powershell
+python -c "import cflib.crtp; cflib.crtp.init_drivers(); print(cflib.crtp.scan_interfaces())"
+```
+
+### Output is `[]`
+
+If the output is:
+
+```text
+[]
+```
+
+then no Crazyradio interface was detected.
+
+The expected working output should look something like:
+
+```text
+[['radio://0/80/2M', '']]
+```
+
+## Sources
+
+Bitcraze Windows USB driver docs:
+
+```text
+https://www.bitcraze.io/documentation/repository/crazyradio-firmware/master/building/usbwindows/
+```
+
+Bitcraze cflib installation docs:
+
+```text
+https://www.bitcraze.io/documentation/repository/crazyflie-lib-python/master/installation/install/
+```

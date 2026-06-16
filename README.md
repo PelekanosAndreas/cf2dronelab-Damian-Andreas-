@@ -83,24 +83,35 @@ If the driver is working, the output should include a radio interface, for examp
 [['radio://0/80/2M', '']]
 ```
 
-## 5. Run the Test Flight
+## 5. Test the Client Code Setup
 
-From PowerShell:
+This setup is only for verifying that the Windows machine can run the Crazyflie client-side Python code and detect the Crazyradio dongle.
+
+This step does **not** run a flight script.
+
+From PowerShell, go to the project folder:
 
 ```powershell
 cd C:\Users\pelek\Downloads\crazyflie2-client\crazyflie2-client-updated
-python cf2flight.py
 ```
 
-Before running:
+Check that Python can import the Crazyflie client library:
 
-- Put the Crazyflie on the floor.
-- Make sure the props are clear.
-- Make sure the battery is connected.
-- Keep `Ctrl+C` ready to stop the script.
-- Watch the terminal for connection and preflight messages.
+```powershell
+python -c "import cflib; print('cflib import OK')"
+```
 
-The test script attempts a short low hover at about `0.25 m`, then stops, disconnects, and writes a timestamped `.json` flight log.
+Check that Python can detect the Crazyradio dongle:
+
+```powershell
+python -c "import cflib.crtp; cflib.crtp.init_drivers(); print(cflib.crtp.scan_interfaces())"
+```
+
+A working result should show a radio interface, for example:
+
+```text
+[['radio://0/80/2M', '']]
+```
 
 ## Troubleshooting
 

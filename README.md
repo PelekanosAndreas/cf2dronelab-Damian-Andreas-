@@ -6,6 +6,17 @@ This repository contains the Python tools used to test the Crazyflie in real fli
 
 The project supports repeatable physical flight experiments by combining waypoint execution, configurable command rates, detailed telemetry collection, preflight safety checks, live trajectory visualization, and recorded-flight replay.
 
+
+
+## Physical Flight Test and Live Tracking
+
+[Watch the synchronized Crazyflie flight test and live trajectory tracking video](docs/media/crazyflie_flight_and_tracking.mp4)
+
+The physical flight is shown on the left, while the right side displays the synchronized trajectory tracking, position estimate, and predicted motion.
+
+
+
+
 ## Key Results
 
 - Conducted more than **200 physical Crazyflie flight tests**

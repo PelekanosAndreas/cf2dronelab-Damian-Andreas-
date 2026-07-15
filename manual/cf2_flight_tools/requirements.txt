@@ -1,0 +1,3 @@
+cflib
+numpy
+libusb-package; platform_system == "Windows"

@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Crazyflie downloaded parameter/log metadata cache
+__cfcache__/
+
+# Flight outputs
+outputs/
+*.jsonl
+
+# Environments and editor files
+.venv/
+venv/
+.env
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db

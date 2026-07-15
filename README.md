@@ -2,7 +2,7 @@
 
 Python tools for controlling, testing, logging, visualizing, and replaying physical flights with the Crazyflie 2.x platform.
 
-This repository contains a host-side flight-testing system developed for autonomous-flight and sim-to-real research. The software communicates with the Crazyflie through a Crazyradio dongle using Bitcraze's `cflib` Python library.
+This repository contains the Python tools used to test the Crazyflie in real flight and support sim-to-real research. The code connects to the drone through a Crazyradio dongle using Bitcraze’s `cflib` library.
 
 The project supports repeatable physical flight experiments by combining waypoint execution, configurable command rates, detailed telemetry collection, preflight safety checks, live trajectory visualization, and recorded-flight replay.
 

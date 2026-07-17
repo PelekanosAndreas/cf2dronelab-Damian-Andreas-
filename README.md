@@ -107,7 +107,12 @@ Saved flight data can be used for plotting, controller analysis, command-rate te
 - Crazyradio PA or Crazyradio 2.0
 - Flow Deck
 - Z-Ranger Deck
-- Windows computer
+- Machine
+ASUS ROG Strix G16 Gaming Laptop
+Processor: Intel Core Ultra 9 275HX
+Graphics Card: NVIDIA GeForce RTX 5070 Ti Laptop GPU
+Memory: 32 GB RAM
+Operating System: Windows 11
 
 ## Software
 
